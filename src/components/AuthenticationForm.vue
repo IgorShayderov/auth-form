@@ -1,40 +1,85 @@
 <template>
   <div :class="$style['form-wrapper']">
-    <h1 :class="$style.title">Authentification form</h1>
+    <h1 :class="$style.title">
+      Authentification form
+    </h1>
 
-    <form :class="$style.form" action="">
-      <label for="email" :class="$style.label">
-        Email:
-        <input
-          type="email"
-          name="email"
-          id="email"
-          :class="$style.input" />
-      </label>
+    <form
+      ref="authenticationForm"
+      @submit="submitForm"
+    >
+      <InputField
+        v-model="email"
+        type="email"
+        name="email"
+        :is-valid="isEmailValid"
+        :class="$style.input"
+      >
+        Email
+      </InputField>
 
-      <label for="password" :class="$style.label">
-        Password:
-        <input
-          type="password"
-          name="password"
-          id="password"
-          :class="$style.input" />
-      </label>
+      <InputField
+        v-model="password"
+        type="password"
+        name="password"
+        :is-valid="isPasswordValid"
+        :class="$style['password-input']"
+      >
+        <div>
+          Password
 
-      <button type="submit">Sign in</button>
+          <BaseButton :class="$style['show-password-btn']" />
+        </div>
+      </InputField>
+
+      <BaseButton
+        type="submit"
+        :disabled="!isFormValid"
+        :is-valid="isFormValid"
+        :class="$style['submit-btn']"
+      >
+        Sign in
+      </BaseButton>
     </form>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
+import { ref, computed } from 'vue';
 
-export default defineComponent({
-  name: 'HelloWorld',
-  props: {
-    msg: String,
-  },
+import InputField from '@/components/BaseInput.vue';
+import BaseButton from '@/components/BaseButton.vue';
+
+import authenticate from '@/api';
+
+const email = ref('');
+const password = ref('');
+
+const isLoading = ref(false);
+
+const authenticationForm = ref<HTMLFormElement | null>(null);
+
+const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
+const isPasswordValid = computed(() => password.value.trim().match(passwordRegex) !== null);
+const emailRegex = /^\S+@\S+\.\S+$/;
+const isEmailValid = computed(() => email.value.trim().match(emailRegex) !== null);
+const isFormValid = computed(() => {
+  const areFieldsValid = isPasswordValid.value && isEmailValid.value;
+
+  return areFieldsValid && !isLoading.value;
 });
+
+const submitForm = async (event: Event) => {
+  event.preventDefault();
+
+  if (isFormValid.value) {
+    const formData = new FormData(authenticationForm.value as HTMLFormElement);
+
+    await authenticate(formData);
+
+    // TODO show message of success
+  }
+};
 </script>
 
 <style lang="scss" module>
@@ -49,38 +94,28 @@ export default defineComponent({
 
 .title {
   margin: 0 0 15px;
+  font-size: 1.8rem;
 }
-
-.form {
-
-}
-
-.label {
-  display: flex;
-  flex-wrap: wrap;
+.input {
   margin: 0 0 10px;
 }
 
-.input {
-  box-sizing: border-box;
-  font-size: 1rem;
-  height: 32px;
-  width: 100%;
+.password-input {
+  @extend .input;
+  position: relative;
+}
+
+.show-password-btn {
+  background: no-repeat center url('@/assets/eye.svg');
+  height: 10px;
+  position: absolute;
+  width: 10px;
 }
 
 .submit-btn {
   background-color: var(--success-color);
-  border: none;
-  border-radius: 5px;
   color: var(--text-color);
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 10px 0 0;
-  padding: 5px 10px;
+  margin: 15px 0 0;
   width: 100%;
-}
-
-.submit-btn_disabled {
-  opacity: 0.6;
 }
 </style>

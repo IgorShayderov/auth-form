@@ -1,15 +1,15 @@
 <template>
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <AuthenticationForm />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import HelloWorld from './components/AuthenticationForm.vue';
+import AuthenticationForm from './components/AuthenticationForm.vue';
 
 export default defineComponent({
   name: 'App',
   components: {
-    HelloWorld,
+    AuthenticationForm,
   },
 });
 </script>
