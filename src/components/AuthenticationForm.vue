@@ -10,20 +10,24 @@
     >
       <InputField
         v-model="email"
+        id="email"
         type="email"
         name="email"
         :is-valid="isEmailValid"
         :class="$style.input"
+        :errors="getEmailErrors"
       >
         Email:
       </InputField>
 
       <InputField
         v-model="password"
+        id="password"
         type="password"
         name="password"
         :is-valid="isPasswordValid"
         :class="$style['password-input']"
+        :errors="getPasswordErrors"
       >
         <div>
           Password:
@@ -59,15 +63,34 @@ const isLoading = ref(false);
 
 const authenticationForm = ref<HTMLFormElement | null>(null);
 
-const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
-const isPasswordValid = computed(() => password.value.trim().match(passwordRegex) !== null);
 const emailRegex = /^\S+@\S+\.\S+$/;
 const isEmailValid = computed(() => email.value.trim().match(emailRegex) !== null);
+const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
+const isPasswordValid = computed(() => password.value.trim().match(passwordRegex) !== null);
 const isFormValid = computed(() => {
   const areFieldsValid = isPasswordValid.value && isEmailValid.value;
 
   return areFieldsValid && !isLoading.value;
 });
+
+const emailErrors = {
+  'Invalid email': isEmailValid.value,
+};
+const passwordErrors = {
+  'Invalid password': isPasswordValid.value,
+};
+const getErrors = (errors = {}) => {
+  return Object.entries(errors)
+    .reduce((messages: string[], [errorMessage, condition]) => {
+      if (!condition) {
+        messages.push(errorMessage);
+      }
+
+      return messages;
+    }, []);
+};
+const getEmailErrors = computed(() => getErrors(emailErrors));
+const getPasswordErrors = computed(() => getErrors(passwordErrors));
 
 const resetFormFields = () => {
   email.value = '';
