@@ -13,6 +13,11 @@
         id="email"
         type="email"
         name="email"
+        maxlength="60"
+        minlength="5"
+        placeholder="Type your email"
+        required
+        :pattern="emailRegex"
         :is-valid="isEmailValid"
         :class="$style.input"
         :errors="getEmailErrors"
@@ -25,6 +30,11 @@
         id="password"
         :type="passwordInputType"
         name="password"
+        maxlength="16"
+        minlength="6"
+        placeholder="Type your password"
+        required
+        :pattern="passwordRegex"
         :is-valid="isPasswordValid"
         :class="[$style.input, $style['password-input']]"
         :errors="getPasswordErrors"
@@ -36,6 +46,7 @@
         <template #additional>
           <BaseButton
             :class="$style['show-password-btn']"
+            aria-label="toggle-password"
             @click="togglePasswordInputType"
           />
         </template>
@@ -43,8 +54,6 @@
 
       <BaseButton
         type="submit"
-        :disabled="!isFormValid"
-        :is-valid="isFormValid"
         :class="$style['submit-btn']"
       >
         Sign in
@@ -118,7 +127,7 @@ const submitForm = async (event: Event) => {
 
     await authenticate(formData).then(() => resetFormFields());
 
-    // TODO show message of success
+    alert('Successfully authenticated!');
   }
 };
 </script>
@@ -146,7 +155,7 @@ const submitForm = async (event: Event) => {
 }
 
 .show-password-btn {
-  background: no-repeat center/20px 20px url('@/assets/eye.svg');
+  background: no-repeat center/20px 20px url('@/assets/icons/eye.svg');
   position: absolute;
 
   bottom: 11px;
