@@ -14,6 +14,8 @@
       @input="handleInput"
       @change="handleChange"
     >
+
+    <slot name="additional" />
   </label>
 
   <p :class="errorMessagesClasses">
@@ -77,6 +79,7 @@ const errorMessagesClasses = computed(() => {
 .label {
   display: flex;
   flex-wrap: wrap;
+  position: relative;
 }
 
 .input {

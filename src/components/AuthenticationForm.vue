@@ -23,17 +23,22 @@
       <InputField
         v-model="password"
         id="password"
-        type="password"
+        :type="passwordInputType"
         name="password"
         :is-valid="isPasswordValid"
-        :class="$style['password-input']"
+        :class="[$style.input, $style['password-input']]"
         :errors="getPasswordErrors"
       >
-        <div>
+        <template #default>
           Password:
+        </template>
 
-          <BaseButton :class="$style['show-password-btn']" />
-        </div>
+        <template #additional>
+          <BaseButton
+            :class="$style['show-password-btn']"
+            @click="togglePasswordInputType"
+          />
+        </template>
       </InputField>
 
       <BaseButton
@@ -56,8 +61,11 @@ import BaseButton from '@/components/BaseButton.vue';
 
 import authenticate from '@/api';
 
+type passwordType = 'text' | 'password';
+
 const email = ref('');
 const password = ref('');
+const passwordInputType = ref<passwordType>('password');
 
 const isLoading = ref(false);
 
@@ -91,6 +99,12 @@ const getErrors = (errors = {}) => {
 };
 const getEmailErrors = computed(() => getErrors(emailErrors));
 const getPasswordErrors = computed(() => getErrors(passwordErrors));
+
+const togglePasswordInputType = () => {
+  const newInputType = passwordInputType.value === 'password' ? 'text' : 'password';
+
+  passwordInputType.value = newInputType;
+};
 
 const resetFormFields = () => {
   email.value = '';
@@ -128,15 +142,17 @@ const submitForm = async (event: Event) => {
 }
 
 .password-input {
-  @extend .input;
-  position: relative;
+  padding: 5px 40px 5px 5px;
 }
 
 .show-password-btn {
-  background: no-repeat center url('@/assets/eye.svg');
-  height: 10px;
+  background: no-repeat center/20px 20px url('@/assets/eye.svg');
   position: absolute;
-  width: 10px;
+
+  bottom: 11px;
+  height: 30px;
+  right: 10px;
+  width: 30px;
 }
 
 .submit-btn {

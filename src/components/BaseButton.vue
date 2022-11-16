@@ -34,6 +34,7 @@ const submitBtnClasses = computed(() => {
 .btn {
   border-radius: 5px;
   border: none;
+  cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
   height: 32px;
