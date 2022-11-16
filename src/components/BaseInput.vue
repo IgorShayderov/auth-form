@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, useCssModule } from 'vue';
+import { computed, ref, useCssModule } from 'vue';
 
 interface IProps {
   modelValue: string;
@@ -35,19 +35,25 @@ const props = withDefaults(defineProps<IProps>(), {
 });
 const $emit = defineEmits<IEmits>();
 
+const isUsed = ref(false);
+
 const handleInput = (event: Event) => {
-  console.log({ event }, 'from input');
+  isUsed.value = false;
   $emit('update:modelValue', (event.target as HTMLInputElement).value);
 };
 
 const handleChange = () => {
-  //
+  isUsed.value = Boolean(props.modelValue);
 };
 
 const $style = useCssModule();
 
 const inputClasses = computed(() => {
-  return [$style.input];
+  return {
+    [$style.input]: true,
+    [$style.input_valid]: isUsed.value && props.isValid,
+    [$style.input_invalid]: isUsed.value && !props.isValid,
+  };
 });
 </script>
 
@@ -72,6 +78,8 @@ const inputClasses = computed(() => {
 }
 
 .input_valid {
+  outline: var(--success-color) auto 1px;
+
   &:focus-visible {
     outline: var(--success-color) auto 1px;
   }

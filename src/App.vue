@@ -27,7 +27,7 @@ body {
   --sub-background-color: #232e3a;
   --border-color: #d6dbfc;
   --text-color: #ffffff;
-  --success-color: #2e7421;
+  --success-color: #3d982c;
   --alert-color: #f20b0b;
 }
 

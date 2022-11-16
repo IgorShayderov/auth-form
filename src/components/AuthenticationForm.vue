@@ -15,7 +15,7 @@
         :is-valid="isEmailValid"
         :class="$style.input"
       >
-        Email
+        Email:
       </InputField>
 
       <InputField
@@ -26,7 +26,7 @@
         :class="$style['password-input']"
       >
         <div>
-          Password
+          Password:
 
           <BaseButton :class="$style['show-password-btn']" />
         </div>
@@ -69,13 +69,17 @@ const isFormValid = computed(() => {
   return areFieldsValid && !isLoading.value;
 });
 
+const resetFormFields = () => {
+  email.value = '';
+  password.value = '';
+};
 const submitForm = async (event: Event) => {
   event.preventDefault();
 
   if (isFormValid.value) {
     const formData = new FormData(authenticationForm.value as HTMLFormElement);
 
-    await authenticate(formData);
+    await authenticate(formData).then(() => resetFormFields());
 
     // TODO show message of success
   }
