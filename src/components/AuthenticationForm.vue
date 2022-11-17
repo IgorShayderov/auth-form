@@ -17,7 +17,7 @@
         minlength="5"
         placeholder="Type your email"
         required
-        :pattern="emailRegex"
+        :pattern="emailRegex.toString().replaceAll('/', '')"
         :is-valid="isEmailValid"
         :class="$style.input"
         :errors="getEmailErrors"
@@ -34,7 +34,7 @@
         minlength="6"
         placeholder="Type your password"
         required
-        :pattern="passwordRegex"
+        :pattern="passwordRegex.toString().replaceAll('/', '')"
         :is-valid="isPasswordValid"
         :class="[$style.input, $style['password-input']]"
         :errors="getPasswordErrors"
@@ -45,7 +45,7 @@
 
         <template #additional>
           <BaseButton
-            :class="$style['show-password-btn']"
+            :class="togglePasswordBtnClasses"
             aria-label="toggle-password"
             @click="togglePasswordInputType"
           />
@@ -63,7 +63,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, useCssModule } from 'vue';
 
 import InputField from '@/components/BaseInput.vue';
 import BaseButton from '@/components/BaseButton.vue';
@@ -115,31 +115,40 @@ const togglePasswordInputType = () => {
   passwordInputType.value = newInputType;
 };
 
-const resetFormFields = () => {
-  email.value = '';
-  password.value = '';
-};
 const submitForm = async (event: Event) => {
   event.preventDefault();
 
   if (isFormValid.value) {
     const formData = new FormData(authenticationForm.value as HTMLFormElement);
 
-    await authenticate(formData).then(() => resetFormFields());
+    await authenticate(formData);
 
     alert('Successfully authenticated!');
   }
 };
+
+const $style = useCssModule();
+
+const togglePasswordBtnClasses = computed(() => {
+  const isPasswordVisible = passwordInputType.value === 'text';
+
+  return [$style['show-password-btn'], isPasswordVisible && $style['show-password-btn_password-visible']];
+});
 </script>
 
 <style lang="scss" module>
+  $small-screen-size: 576px;
+
 .form-wrapper {
   background-color: var(--sub-background-color);
   border-radius: 5px;
   border: 1px solid var(--border-color);
-  margin: auto;
+  margin: auto 20px;
   padding: 15px;
-  width: 350px;
+
+  @media screen and (min-width: $small-screen-size) {
+    width: 350px;
+  }
 }
 
 .title {
@@ -162,6 +171,10 @@ const submitForm = async (event: Event) => {
   height: 30px;
   right: 10px;
   width: 30px;
+}
+
+.show-password-btn_password-visible {
+  background: no-repeat center/24px 24px url('@/assets/icons/eye-crossed.svg');
 }
 
 .submit-btn {

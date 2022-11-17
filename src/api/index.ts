@@ -1,4 +1,4 @@
-const baseUrl = 'https://jsonplaceholder.typicode.com';
+const baseUrl = 'https://jsonplaceholder.typicode.com/posts';
 
 export default (formData: FormData, options = {}) => {
   return fetch(baseUrl, {

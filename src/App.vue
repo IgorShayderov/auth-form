@@ -34,11 +34,11 @@ body {
 #app {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
+  align-items: center;
   background-color: var(--background-color);
   color: var(--text-color);
   display: flex;
   flex-direction: column;
-  flex: 1;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 1rem;
   height: 100%;
