@@ -11,6 +11,7 @@
       <InputField
         v-model="email"
         id="email"
+        autocomplete="email"
         type="email"
         name="email"
         maxlength="60"
@@ -28,6 +29,7 @@
       <InputField
         v-model="password"
         id="password"
+        autocomplete="current-password"
         :type="passwordInputType"
         name="password"
         maxlength="16"
