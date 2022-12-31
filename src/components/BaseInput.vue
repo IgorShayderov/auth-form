@@ -8,6 +8,7 @@
     </slot>
     <input
       :id="id"
+      aria-describedby="errorMessages"
       :value="modelValue"
       :class="inputClasses"
       v-bind="$attrs"
@@ -18,7 +19,10 @@
     <slot name="additional" />
   </label>
 
-  <p :class="errorMessagesClasses">
+  <p
+    id="errorMessages"
+    :class="errorMessagesClasses"
+  >
     {{ errors.join(', ') }}
   </p>
 </template>
