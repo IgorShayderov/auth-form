@@ -36,7 +36,6 @@
         minlength="6"
         placeholder="Type your password"
         required
-        :pattern="passwordRegex.toString().replaceAll('/', '')"
         :is-valid="isPasswordValid"
         :class="[$style.input, $style['password-input']]"
         :errors="getPasswordErrors"
@@ -84,6 +83,7 @@ const authenticationForm = ref<HTMLFormElement | null>(null);
 
 const emailRegex = /^\S+@\S+\.\S+$/;
 const isEmailValid = computed(() => email.value.trim().match(emailRegex) !== null);
+// TODO remove
 const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
 const isPasswordValid = computed(() => password.value.trim().match(passwordRegex) !== null);
 const isFormValid = computed(() => {
@@ -162,7 +162,7 @@ const togglePasswordBtnClasses = computed(() => {
 }
 
 .password-input {
-  padding: 5px 40px 5px 5px;
+  padding: 5px 40px 5px 10px;
 }
 
 .show-password-btn {

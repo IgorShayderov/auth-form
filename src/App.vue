@@ -15,7 +15,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-html {
+:root {
   height: 100%;
 }
 
