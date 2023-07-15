@@ -1,7 +1,7 @@
 <template>
   <div :class="$style['form-wrapper']">
     <h1 :class="$style.title">
-      Auth
+      {{ t('authForm.title') }}
     </h1>
 
     <form
@@ -16,12 +16,12 @@
         name="email"
         :maxlength="MAX_EMAIL_LENGTH"
         :minlength="MIN_EMAIL_LENGTH"
-        placeholder="Type your email"
+        :placeholder="t('authForm.inputs.email.placeholder')"
         required
         :is-valid="isEmailValid"
         :class="$style.input"
       >
-        Email:
+        {{ t('authForm.inputs.email.label') }}:
       </InputField>
 
       <InputField
@@ -32,19 +32,19 @@
         name="password"
         :maxlength="MAX_PASSWORD_LENGTH"
         :minlength="MIN_PASSWORD_LENGTH"
-        placeholder="Type your password"
+        :placeholder="t('authForm.inputs.password.placeholder')"
         required
         :is-valid="isPasswordValid"
         :class="[$style.input, $style['password-input']]"
       >
         <template #default>
-          Password:
+          {{ t('authForm.inputs.password.label') }}:
         </template>
 
         <template #additional>
           <BaseButton
             :class="togglePasswordBtnClasses"
-            aria-label="toggle-password"
+            :aria-label="t('authForm.buttons.showPassword.ariaLabel')"
             @click.stop="togglePasswordInputType"
           />
         </template>
@@ -54,7 +54,7 @@
         type="submit"
         :class="$style['submit-btn']"
       >
-        Sign in
+        {{ t('authForm.buttons.submit.title') }}
       </BaseButton>
     </form>
   </div>
@@ -64,6 +64,7 @@
 import {
   ref, reactive, computed, useCssModule,
 } from 'vue';
+import { useTranslation } from 'i18next-vue';
 
 import InputField from '@/components/BaseInput.vue';
 import BaseButton from '@/components/BaseButton.vue';
@@ -72,6 +73,8 @@ import { logIn } from '@/api/index';
 
 type passwordType = 'text' | 'password';
 type formStatus = 'pending' | 'loading';
+
+const { t } = useTranslation();
 
 const email = ref('');
 const password = ref('');
@@ -93,11 +96,7 @@ const MIN_EMAIL_LENGTH = 5;
 const emailRegex = /^\S+@\S+\.\S+$/;
 const isEmailValid = computed(() => email.value.trim().match(emailRegex) !== null);
 const isPasswordValid = computed(() => password.value.trim().length > MIN_PASSWORD_LENGTH);
-const isFormValid = computed(() => {
-  const areFieldsValid = isPasswordValid.value && isEmailValid.value;
-
-  return areFieldsValid && state.formStatus !== 'loading';
-});
+const isFormValid = computed(() => isPasswordValid.value && isEmailValid.value);
 
 const togglePasswordInputType = () => {
   passwordInputType.value = passwordInputType.value === 'password' ? 'text' : 'password';
@@ -106,7 +105,7 @@ const togglePasswordInputType = () => {
 const submitForm = async (event: Event) => {
   event.preventDefault();
 
-  if (isFormValid.value) {
+  if (isFormValid.value && state.formStatus !== 'loading') {
     // TODO добавить лоадер
     state.formStatus = 'loading';
     const formData = new FormData(authenticationForm.value as HTMLFormElement);
