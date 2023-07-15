@@ -16,10 +16,7 @@
       "webpack-env"
     ],
     "paths": {
-        "@assets/*": ["./src/assets/*"],
-        "@classes/*": ["./src/classes/*"],
-        "@components/*": ["./src/components/*"],
-        "@hooks/*": ["./src/hooks/*"]
+        "@/*": ["./src/*"],
     },
     "lib": [
       "esnext",
@@ -30,10 +27,7 @@
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.tsx",
     "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx"
   ],
   "exclude": [
     "node_modules"

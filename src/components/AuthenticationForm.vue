@@ -21,7 +21,6 @@
         :pattern="emailRegex.toString().replaceAll('/', '')"
         :is-valid="isEmailValid"
         :class="$style.input"
-        :errors="getEmailErrors"
       >
         Email:
       </InputField>
@@ -38,7 +37,6 @@
         required
         :is-valid="isPasswordValid"
         :class="[$style.input, $style['password-input']]"
-        :errors="getPasswordErrors"
       >
         <template #default>
           Password:
@@ -48,7 +46,7 @@
           <BaseButton
             :class="togglePasswordBtnClasses"
             aria-label="toggle-password"
-            @click="togglePasswordInputType"
+            @click.stop="togglePasswordInputType"
           />
         </template>
       </InputField>
@@ -69,7 +67,7 @@ import { ref, computed, useCssModule } from 'vue';
 import InputField from '@/components/BaseInput.vue';
 import BaseButton from '@/components/BaseButton.vue';
 
-import authenticate from '@/api';
+import authenticate from '@/api/index';
 
 type passwordType = 'text' | 'password';
 
@@ -91,25 +89,6 @@ const isFormValid = computed(() => {
 
   return areFieldsValid && !isLoading.value;
 });
-
-const emailErrors = {
-  'Invalid email': isEmailValid.value,
-};
-const passwordErrors = {
-  'Invalid password': isPasswordValid.value,
-};
-const getErrors = (errors = {}) => {
-  return Object.entries(errors)
-    .reduce((messages: string[], [errorMessage, condition]) => {
-      if (!condition) {
-        messages.push(errorMessage);
-      }
-
-      return messages;
-    }, []);
-};
-const getEmailErrors = computed(() => getErrors(emailErrors));
-const getPasswordErrors = computed(() => getErrors(passwordErrors));
 
 const togglePasswordInputType = () => {
   const newInputType = passwordInputType.value === 'password' ? 'text' : 'password';
@@ -145,8 +124,8 @@ const togglePasswordBtnClasses = computed(() => {
   background-color: var(--sub-background-color);
   border-radius: 5px;
   border: 1px solid var(--border-color);
-  margin: auto 20px;
   padding: 15px;
+  margin-top: 150px;
 
   @media screen and (min-width: $small-screen-size) {
     width: 350px;
@@ -158,7 +137,7 @@ const togglePasswordBtnClasses = computed(() => {
   font-size: 1.8rem;
 }
 .input {
-  margin: 0 0 10px;
+  margin: 10px 0;
 }
 
 .password-input {

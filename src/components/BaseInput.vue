@@ -92,7 +92,6 @@ const errorMessagesClasses = computed(() => {
   box-sizing: border-box;
   font-size: 1rem;
   height: 32px;
-  margin-top: 10px;
   padding: 5px 10px;
   width: 100%;
 
