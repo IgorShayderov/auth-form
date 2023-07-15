@@ -9,6 +9,7 @@
     <input
       :id="id"
       aria-describedby="errorMessages"
+      :aria-invalid="!isValid"
       :value="modelValue"
       :class="inputClasses"
       v-bind="$attrs"
@@ -30,7 +31,7 @@
 <script lang="ts" setup>
 import { computed, ref, useCssModule } from 'vue';
 
-interface IProps {
+interface I$props {
   id: string;
   modelValue: string;
   labelText?: string;
@@ -42,7 +43,7 @@ interface IEmits {
   (e: 'update:modelValue', value: string): void;
 }
 
-const props = withDefaults(defineProps<IProps>(), {
+const $props = withDefaults(defineProps<I$props>(), {
   labelText: '',
   isValid: true,
   errors: () => [],
@@ -57,7 +58,7 @@ const handleInput = (event: Event) => {
 };
 
 const handleChange = () => {
-  isUsed.value = Boolean(props.modelValue);
+  isUsed.value = Boolean($props.modelValue);
 };
 
 const $style = useCssModule();
@@ -65,12 +66,12 @@ const $style = useCssModule();
 const inputClasses = computed(() => {
   return {
     [$style.input]: true,
-    [$style.input_valid]: isUsed.value && props.isValid,
-    [$style.input_invalid]: isUsed.value && !props.isValid,
+    [$style.input_valid]: isUsed.value && $props.isValid,
+    [$style.input_invalid]: isUsed.value && !$props.isValid,
   };
 });
 const errorMessagesClasses = computed(() => {
-  const shouldBeVisible = isUsed.value && props.errors.length > 0 && !props.isValid;
+  const shouldBeVisible = isUsed.value && $props.errors.length > 0 && !$props.isValid;
 
   return {
     [$style['error-message']]: true,

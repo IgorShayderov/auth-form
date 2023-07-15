@@ -1,7 +1,7 @@
 <template>
   <div :class="$style['form-wrapper']">
     <h1 :class="$style.title">
-      Authentification form
+      Auth
     </h1>
 
     <form
@@ -21,6 +21,7 @@
         :pattern="emailRegex.toString().replaceAll('/', '')"
         :is-valid="isEmailValid"
         :class="$style.input"
+        :errors="getEmailErrors"
       >
         Email:
       </InputField>
@@ -37,6 +38,7 @@
         required
         :is-valid="isPasswordValid"
         :class="[$style.input, $style['password-input']]"
+        :errors="getPasswordErrors"
       >
         <template #default>
           Password:
@@ -62,7 +64,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, useCssModule } from 'vue';
+import { ref, reactive, computed, useCssModule } from 'vue';
 
 import InputField from '@/components/BaseInput.vue';
 import BaseButton from '@/components/BaseButton.vue';
@@ -75,20 +77,43 @@ const email = ref('');
 const password = ref('');
 const passwordInputType = ref<passwordType>('password');
 
-const isLoading = ref(false);
+const state = reactive<{
+  formStatus: 'pending' | 'loading';
+}>({
+  formStatus: 'pending'
+});
 
 const authenticationForm = ref<HTMLFormElement | null>(null);
 
 const emailRegex = /^\S+@\S+\.\S+$/;
 const isEmailValid = computed(() => email.value.trim().match(emailRegex) !== null);
-// TODO remove
 const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
 const isPasswordValid = computed(() => password.value.trim().match(passwordRegex) !== null);
 const isFormValid = computed(() => {
   const areFieldsValid = isPasswordValid.value && isEmailValid.value;
 
-  return areFieldsValid && !isLoading.value;
+  return areFieldsValid && state.formStatus !== 'loading';
 });
+
+const emailErrors = {
+  'Invalid email': isEmailValid.value,
+};
+const passwordErrors = {
+  'Password length should be from 6 to 16 symbols with at least one special symbol(!@#$%^&*)': isPasswordValid.value,
+};
+const getErrors = (errors = {}) => {
+  return Object.entries(errors)
+    .reduce((messages: string[], [errorMessage, condition]) => {
+      if (!condition) {
+        messages.push(errorMessage);
+      }
+
+      return messages;
+    }, []);
+};
+
+const getEmailErrors = computed(() => getErrors(emailErrors));
+const getPasswordErrors = computed(() => getErrors(passwordErrors));
 
 const togglePasswordInputType = () => {
   const newInputType = passwordInputType.value === 'password' ? 'text' : 'password';
@@ -100,11 +125,20 @@ const submitForm = async (event: Event) => {
   event.preventDefault();
 
   if (isFormValid.value) {
+    // TODO set loading
+    state.formStatus = 'loading';
     const formData = new FormData(authenticationForm.value as HTMLFormElement);
 
-    await authenticate(formData);
-
-    alert('Successfully authenticated!');
+    try {
+      await authenticate(formData);
+      // TODO заменить алерт на тост
+      alert('Successfully authenticated!');
+    } catch {
+      // TODO обработать ошибку неверного логина и пароля отдельно от ошибки сети
+      alert('Authentication was unsuccessful. Try again.');
+    } finally {
+      state.formStatus = 'pending';
+    }
   }
 };
 
@@ -138,6 +172,10 @@ const togglePasswordBtnClasses = computed(() => {
 }
 .input {
   margin: 10px 0;
+
+  &:focus {
+    outline-color: var(--highlight-color);
+  }
 }
 
 .password-input {

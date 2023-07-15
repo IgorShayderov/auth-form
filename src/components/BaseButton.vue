@@ -1,7 +1,7 @@
 <template>
   <button
     :class="submitBtnClasses"
-    v-bind="$attrs"
+    type="button"
   >
     <slot name="default">
       {{ labelText }}
@@ -17,7 +17,7 @@ interface IProps {
   isValid?: boolean;
 }
 
-const props = withDefaults(defineProps<IProps>(), {
+const $props = withDefaults(defineProps<IProps>(), {
   labelText: '',
   isValid: true,
 });
@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<IProps>(), {
 const $style = useCssModule();
 
 const submitBtnClasses = computed(() => {
-  return [$style.btn, !props.isValid && $style.btn_disabled];
+  return [$style.btn, !$props.isValid && $style.btn_invalid];
 });
 
 </script>
@@ -41,7 +41,7 @@ const submitBtnClasses = computed(() => {
   padding: 5px 10px;
 }
 
-.btn_disabled {
+.btn_invalid {
   opacity: 0.6;
 }
 </style>

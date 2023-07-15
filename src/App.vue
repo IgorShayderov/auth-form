@@ -29,6 +29,7 @@ body {
   --text-color: #ffffff;
   --success-color: #3d982c;
   --alert-color: #f20b0b;
+  --highlight-color: blue;
 }
 
 #app {
