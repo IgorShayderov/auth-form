@@ -12,7 +12,8 @@
   "dependencies": {
     "i18next": "^23.2.11",
     "i18next-vue": "^2.2.1",
-    "vue": "^3.3.4"
+    "vue": "^3.3.4",
+    "vue3-toastify": "^0.1.11"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.4.0",

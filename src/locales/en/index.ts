@@ -20,6 +20,11 @@ export default {
           title: 'Sign in',
         },
       },
+      messages: {
+        invalidAuth: 'Login or password is invalid',
+        success: 'Successfully authenticated!',
+        failure: 'Authentication was unsuccessful. Try again.',
+      },
     },
   },
 };

@@ -13,7 +13,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "webpack-env"
+      "vue3-toastify/global"
     ],
     "paths": {
         "@/*": ["./src/*"],

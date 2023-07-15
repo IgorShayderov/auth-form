@@ -65,6 +65,7 @@ import {
   ref, reactive, computed, useCssModule,
 } from 'vue';
 import { useTranslation } from 'i18next-vue';
+import { toast } from 'vue3-toastify';
 
 import InputField from '@/components/BaseInput.vue';
 import BaseButton from '@/components/BaseButton.vue';
@@ -112,11 +113,14 @@ const submitForm = async (event: Event) => {
 
     try {
       await logIn(formData);
-      // TODO заменить алерт на тост
-      alert('Successfully authenticated!');
-    } catch {
-      // TODO обработать ошибку неверного логина и пароля отдельно от ошибки сети
-      alert('Authentication was unsuccessful. Try again.');
+
+      toast.success(t('authForm.messages.success'));
+    } catch (error) {
+      if (error.response?.status === 401) {
+        // TODO обработать ошибку неверного логина и пароля отдельно от ошибки сети
+      } else {
+        toast.error(t('authForm.messages.failure'));
+      }
     } finally {
       state.formStatus = 'pending';
     }
