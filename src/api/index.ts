@@ -1,7 +1,7 @@
 const baseUrl = 'https://jsonplaceholder.typicode.com/posts';
 
-export default (formData: FormData, options = {}) => {
-  return fetch(baseUrl, {
+export const logIn = async (formData: FormData, options = {}) => {
+  const response = await fetch(baseUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -9,4 +9,6 @@ export default (formData: FormData, options = {}) => {
     body: formData,
     ...options,
   });
+  console.log({response})
+  return null;
 };

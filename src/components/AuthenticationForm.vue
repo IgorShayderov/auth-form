@@ -14,14 +14,12 @@
         autocomplete="email"
         type="email"
         name="email"
-        maxlength="60"
-        minlength="5"
+        :maxlength="MAX_EMAIL_LENGTH"
+        :minlength="MIN_EMAIL_LENGTH"
         placeholder="Type your email"
         required
-        :pattern="emailRegex.toString().replaceAll('/', '')"
         :is-valid="isEmailValid"
         :class="$style.input"
-        :errors="getEmailErrors"
       >
         Email:
       </InputField>
@@ -32,13 +30,12 @@
         autocomplete="current-password"
         :type="passwordInputType"
         name="password"
-        maxlength="16"
-        minlength="6"
+        :maxlength="MAX_PASSWORD_LENGTH"
+        :minlength="MIN_PASSWORD_LENGTH"
         placeholder="Type your password"
         required
         :is-valid="isPasswordValid"
         :class="[$style.input, $style['password-input']]"
-        :errors="getPasswordErrors"
       >
         <template #default>
           Password:
@@ -69,68 +66,51 @@ import { ref, reactive, computed, useCssModule } from 'vue';
 import InputField from '@/components/BaseInput.vue';
 import BaseButton from '@/components/BaseButton.vue';
 
-import authenticate from '@/api/index';
+import { logIn } from '@/api/index';
 
 type passwordType = 'text' | 'password';
+type formStatus = 'pending' | 'loading';
 
 const email = ref('');
 const password = ref('');
 const passwordInputType = ref<passwordType>('password');
 
 const state = reactive<{
-  formStatus: 'pending' | 'loading';
+  formStatus: formStatus;
 }>({
   formStatus: 'pending'
 });
 
 const authenticationForm = ref<HTMLFormElement | null>(null);
 
+const MIN_PASSWORD_LENGTH = 6;
+const MAX_PASSWORD_LENGTH = 16;
+const MAX_EMAIL_LENGTH = 30;
+const MIN_EMAIL_LENGTH = 5;
+
 const emailRegex = /^\S+@\S+\.\S+$/;
 const isEmailValid = computed(() => email.value.trim().match(emailRegex) !== null);
-const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
-const isPasswordValid = computed(() => password.value.trim().match(passwordRegex) !== null);
+const isPasswordValid = computed(() => password.value.trim().length > MIN_PASSWORD_LENGTH);
 const isFormValid = computed(() => {
   const areFieldsValid = isPasswordValid.value && isEmailValid.value;
 
   return areFieldsValid && state.formStatus !== 'loading';
 });
 
-const emailErrors = {
-  'Invalid email': isEmailValid.value,
-};
-const passwordErrors = {
-  'Password length should be from 6 to 16 symbols with at least one special symbol(!@#$%^&*)': isPasswordValid.value,
-};
-const getErrors = (errors = {}) => {
-  return Object.entries(errors)
-    .reduce((messages: string[], [errorMessage, condition]) => {
-      if (!condition) {
-        messages.push(errorMessage);
-      }
-
-      return messages;
-    }, []);
-};
-
-const getEmailErrors = computed(() => getErrors(emailErrors));
-const getPasswordErrors = computed(() => getErrors(passwordErrors));
-
 const togglePasswordInputType = () => {
-  const newInputType = passwordInputType.value === 'password' ? 'text' : 'password';
-
-  passwordInputType.value = newInputType;
+  passwordInputType.value = passwordInputType.value === 'password' ? 'text' : 'password';
 };
 
 const submitForm = async (event: Event) => {
   event.preventDefault();
 
   if (isFormValid.value) {
-    // TODO set loading
+    // TODO добавить лоадер
     state.formStatus = 'loading';
     const formData = new FormData(authenticationForm.value as HTMLFormElement);
 
     try {
-      await authenticate(formData);
+      await logIn(formData);
       // TODO заменить алерт на тост
       alert('Successfully authenticated!');
     } catch {
