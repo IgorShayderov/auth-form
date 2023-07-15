@@ -9,6 +9,6 @@ export const logIn = async (formData: FormData, options = {}) => {
     body: formData,
     ...options,
   });
-  console.log({response})
+  console.log({ response });
   return null;
 };

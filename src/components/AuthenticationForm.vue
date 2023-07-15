@@ -61,7 +61,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, useCssModule } from 'vue';
+import {
+  ref, reactive, computed, useCssModule,
+} from 'vue';
 
 import InputField from '@/components/BaseInput.vue';
 import BaseButton from '@/components/BaseButton.vue';
@@ -78,7 +80,7 @@ const passwordInputType = ref<passwordType>('password');
 const state = reactive<{
   formStatus: formStatus;
 }>({
-  formStatus: 'pending'
+  formStatus: 'pending',
 });
 
 const authenticationForm = ref<HTMLFormElement | null>(null);
