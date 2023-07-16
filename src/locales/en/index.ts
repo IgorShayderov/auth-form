@@ -21,7 +21,8 @@ export default {
         },
       },
       messages: {
-        invalidAuth: 'Login or password is invalid',
+        unathorized: 'Login or password is invalid',
+        defaultError: 'Something goes wrong',
         success: 'Successfully authenticated!',
         failure: 'Authentication was unsuccessful. Try again.',
       },

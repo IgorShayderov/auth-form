@@ -8,6 +8,13 @@
       ref="authenticationForm"
       @submit="submitForm"
     >
+      <p
+        v-show="state.error"
+        :class="$style['auth-error']"
+      >
+        {{ getErrorText }}
+      </p>
+
       <InputField
         v-model="email"
         id="email"
@@ -20,6 +27,7 @@
         required
         :is-valid="isEmailValid"
         :class="$style.input"
+        @focus="reset"
       >
         {{ t('authForm.inputs.email.label') }}:
       </InputField>
@@ -36,6 +44,7 @@
         required
         :is-valid="isPasswordValid"
         :class="[$style.input, $style['password-input']]"
+        @focus="reset"
       >
         <template #default>
           {{ t('authForm.inputs.password.label') }}:
@@ -53,6 +62,7 @@
       <BaseButton
         type="submit"
         :class="$style['submit-btn']"
+        :is-loading="isLoading"
       >
         {{ t('authForm.buttons.submit.title') }}
       </BaseButton>
@@ -83,8 +93,10 @@ const passwordInputType = ref<passwordType>('password');
 
 const state = reactive<{
   formStatus: formStatus;
+  error: string | null;
 }>({
   formStatus: 'pending',
+  error: null,
 });
 
 const authenticationForm = ref<HTMLFormElement | null>(null);
@@ -96,18 +108,32 @@ const MIN_EMAIL_LENGTH = 5;
 
 const emailRegex = /^\S+@\S+\.\S+$/;
 const isEmailValid = computed(() => email.value.trim().match(emailRegex) !== null);
-const isPasswordValid = computed(() => password.value.trim().length > MIN_PASSWORD_LENGTH);
+const isPasswordValid = computed(() => password.value.trim().length >= MIN_PASSWORD_LENGTH);
 const isFormValid = computed(() => isPasswordValid.value && isEmailValid.value);
+
+const isLoading = computed(() => state.formStatus === 'loading');
+
+const getErrorText = computed(() => {
+  switch (state.error) {
+    case 'unathorized':
+      return t('authForm.messages.unathorized');
+    default:
+      return t('authForm.messages.defaultError');
+  }
+});
 
 const togglePasswordInputType = () => {
   passwordInputType.value = passwordInputType.value === 'password' ? 'text' : 'password';
 };
 
+const reset = () => {
+  state.error = null;
+};
+
 const submitForm = async (event: Event) => {
   event.preventDefault();
 
-  if (isFormValid.value && state.formStatus !== 'loading') {
-    // TODO добавить лоадер
+  if (isFormValid.value && !isLoading.value) {
     state.formStatus = 'loading';
     const formData = new FormData(authenticationForm.value as HTMLFormElement);
 
@@ -115,12 +141,15 @@ const submitForm = async (event: Event) => {
       await logIn(formData);
 
       toast.success(t('authForm.messages.success'));
+      throw new Error();
     } catch (error) {
       if (error.response?.status === 401) {
-        // TODO обработать ошибку неверного логина и пароля отдельно от ошибки сети
+        state.error = 'unathorized';
       } else {
-        toast.error(t('authForm.messages.failure'));
+        state.error = error.message;
       }
+
+      toast.error(t('authForm.messages.failure'));
     } finally {
       state.formStatus = 'pending';
     }
@@ -178,7 +207,18 @@ const togglePasswordBtnClasses = computed(() => {
 }
 
 .show-password-btn_password-visible {
-  background: no-repeat center/24px 24px url('@/assets/icons/eye-crossed.svg');
+  background: no-repeat center/26px 26px url('@/assets/icons/eye-crossed.svg');
+}
+
+.auth-error {
+  margin: 0;
+
+  color: var(--text-color);
+  border-radius: 6px;
+  padding: 5px 0;
+  background-color: var(--alert-background);
+  border: 1px solid var(--alert-color);
+  margin-bottom: 10px;
 }
 
 .submit-btn {

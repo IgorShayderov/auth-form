@@ -29,6 +29,7 @@ body {
   --text-color: #ffffff;
   --success-color: #3d982c;
   --alert-color: #f20b0b;
+  --alert-background: rgba(255, 0, 0, 0.46);
   --highlight-color: blue;
 }
 

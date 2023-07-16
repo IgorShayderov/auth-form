@@ -9,6 +9,7 @@ export const logIn = async (formData: FormData, options = {}) => {
     body: formData,
     ...options,
   });
-  console.log({ response });
-  return null;
+  const data = await response.json();
+
+  return data;
 };
