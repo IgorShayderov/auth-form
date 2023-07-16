@@ -59,7 +59,7 @@ const submitBtnClasses = computed(() => {
 
   &_loading {
     background-color: transparent;
-    background-image: url('@/assets/icons/loader2.svg');
+    background-image: url('@/assets/icons/loader.svg');
     background-repeat: no-repeat;
     background-size: calc(var(--input-height) + (var(--vertical-padding) * 2));
     background-position: center;
@@ -68,9 +68,5 @@ const submitBtnClasses = computed(() => {
   &[disabled] {
     cursor: wait;
   }
-}
-
-.btn__loader {
-  // background: url('@/assets/icons/loader.svg');
 }
 </style>

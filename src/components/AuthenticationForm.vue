@@ -148,8 +148,6 @@ const submitForm = async (event: Event) => {
       } else {
         state.error = error.message;
       }
-
-      toast.error(t('authForm.messages.failure'));
     } finally {
       state.formStatus = 'pending';
     }
