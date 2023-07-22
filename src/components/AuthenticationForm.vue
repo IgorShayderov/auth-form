@@ -105,9 +105,9 @@ const MIN_PASSWORD_LENGTH = 6;
 const MAX_PASSWORD_LENGTH = 16;
 const MAX_EMAIL_LENGTH = 30;
 const MIN_EMAIL_LENGTH = 5;
+const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
 
-const emailRegex = /^\S+@\S+\.\S+$/;
-const isEmailValid = computed(() => email.value.trim().match(emailRegex) !== null);
+const isEmailValid = computed(() => email.value.trim().match(EMAIL_REGEX) !== null);
 const isPasswordValid = computed(() => password.value.trim().length >= MIN_PASSWORD_LENGTH);
 const isFormValid = computed(() => isPasswordValid.value && isEmailValid.value);
 
@@ -141,7 +141,6 @@ const submitForm = async (event: Event) => {
       await logIn(formData);
 
       toast.success(t('authForm.messages.success'));
-      throw new Error();
     } catch (error) {
       if (error.response?.status === 401) {
         state.error = 'unathorized';
