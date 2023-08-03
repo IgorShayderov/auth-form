@@ -26,6 +26,11 @@ export default {
         success: 'Successfully authenticated!',
         failure: 'Authentication was unsuccessful. Try again.',
       },
+      errors: {
+        minLength: 'Min length is {{minLength}} characters',
+        maxLength: 'Max length is {{maxLength}} characters',
+        pattern: 'Should be valid {{field}}',
+      },
     },
   },
 };

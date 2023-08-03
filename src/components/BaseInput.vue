@@ -24,7 +24,7 @@
     id="errorMessages"
     :class="errorMessagesClasses"
   >
-    {{ errors.join(', ') }}
+    {{ errors[0] }}
   </p>
 </template>
 

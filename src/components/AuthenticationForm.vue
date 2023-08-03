@@ -27,6 +27,7 @@
         required
         :is-valid="isEmailValid"
         :class="$style.input"
+        :errors="getEmailErrors"
         @focus="reset"
       >
         {{ t('authForm.inputs.email.label') }}:
@@ -44,6 +45,7 @@
         required
         :is-valid="isPasswordValid"
         :class="[$style.input, $style['password-input']]"
+        :errors="getPasswordErrors"
         @focus="reset"
       >
         <template #default>
@@ -107,9 +109,51 @@ const MAX_EMAIL_LENGTH = 30;
 const MIN_EMAIL_LENGTH = 5;
 const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
 
-const isEmailValid = computed(() => email.value.trim().match(EMAIL_REGEX) !== null);
-const isPasswordValid = computed(() => password.value.trim().length >= MIN_PASSWORD_LENGTH);
+const isEmailValid = computed(() => {
+  const trimmedEmail = email.value.trim();
+  const emailLength = trimmedEmail.length;
+
+  return trimmedEmail.match(EMAIL_REGEX) !== null
+    && emailLength >= MIN_EMAIL_LENGTH && emailLength <= MAX_EMAIL_LENGTH;
+});
+const isPasswordValid = computed(() => {
+  const passwordLength = password.value.trim().length;
+
+  return passwordLength >= MIN_PASSWORD_LENGTH && passwordLength <= MAX_EMAIL_LENGTH;
+});
 const isFormValid = computed(() => isPasswordValid.value && isEmailValid.value);
+
+const emailErrors = computed(() => {
+  const trimmedEmail = email.value.trim();
+  const emailLength = trimmedEmail.length;
+
+  return {
+    [t('authForm.errors.minLength', { minLength: MIN_EMAIL_LENGTH })]: emailLength < MIN_EMAIL_LENGTH,
+    [t('authForm.errors.maxLength', { maxLength: MAX_EMAIL_LENGTH })]: emailLength > MAX_EMAIL_LENGTH,
+    [t('authForm.errors.pattern', { field: 'Email' })]: trimmedEmail.match(EMAIL_REGEX) === null,
+  };
+});
+const passwordErrors = computed(() => {
+  const trimmedPassword = password.value.trim();
+  const passwordLength = trimmedPassword.length;
+
+  return {
+    [t('authForm.errors.minLength', { minLength: MIN_PASSWORD_LENGTH })]: passwordLength < MIN_PASSWORD_LENGTH,
+    [t('authForm.errors.maxLength', { maxLength: MAX_PASSWORD_LENGTH })]: passwordLength > MAX_PASSWORD_LENGTH,
+  };
+});
+const getErrors = (errors = {}) => {
+  return Object.entries(errors)
+    .reduce((messages: string[], [errorMessage, condition]) => {
+      if (condition) {
+        messages.push(errorMessage);
+      }
+
+      return messages;
+    }, []);
+};
+const getEmailErrors = computed(() => getErrors(emailErrors.value));
+const getPasswordErrors = computed(() => getErrors(passwordErrors.value));
 
 const isLoading = computed(() => state.formStatus === 'loading');
 
