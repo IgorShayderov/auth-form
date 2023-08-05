@@ -1,15 +1,14 @@
 <template>
   <button
-    :class="submitBtnClasses"
+    :class="btnClasses"
     :disabled="$props.isLoading"
     type="button"
   >
-    <slot
-      v-if="!$props.isLoading"
-      name="default"
-    >
-      {{ labelText }}
-    </slot>
+    <span :class="btnTextClasses">
+      <slot name="default">
+        {{ labelText }}
+      </slot>
+    </span>
   </button>
 </template>
 
@@ -30,7 +29,7 @@ const $props = withDefaults(defineProps<IProps>(), {
 
 const $style = useCssModule();
 
-const submitBtnClasses = computed(() => {
+const btnClasses = computed(() => {
   return {
     [$style.btn]: true,
     [$style.btn_invalid]: !$props.isValid,
@@ -38,6 +37,12 @@ const submitBtnClasses = computed(() => {
   };
 });
 
+const btnTextClasses = computed(() => {
+  return {
+    [$style.btn__text]: true,
+    [$style.btn__text_loading]: $props.isLoading,
+  };
+});
 </script>
 
 <style lang="scss" module>
@@ -58,7 +63,6 @@ const submitBtnClasses = computed(() => {
   }
 
   &_loading {
-    background-color: transparent;
     background-image: url('@/assets/icons/loader.svg');
     background-repeat: no-repeat;
     background-size: calc(var(--input-height) + (var(--vertical-padding) * 2));
@@ -67,6 +71,12 @@ const submitBtnClasses = computed(() => {
 
   &[disabled] {
     cursor: wait;
+  }
+}
+
+.btn__text {
+  &_loading {
+    visibility: hidden;
   }
 }
 </style>
