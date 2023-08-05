@@ -29,7 +29,7 @@ export default {
       errors: {
         minLength: 'Min length is {{minLength}} characters',
         maxLength: 'Max length is {{maxLength}} characters',
-        pattern: 'Should be valid {{field}}',
+        email: 'Should be valid email',
       },
     },
   },

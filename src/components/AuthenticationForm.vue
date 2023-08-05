@@ -130,7 +130,7 @@ const emailErrors = computed(() => {
   return {
     [t('authForm.errors.minLength', { minLength: MIN_EMAIL_LENGTH })]: emailLength < MIN_EMAIL_LENGTH,
     [t('authForm.errors.maxLength', { maxLength: MAX_EMAIL_LENGTH })]: emailLength > MAX_EMAIL_LENGTH,
-    [t('authForm.errors.pattern', { field: 'Email' })]: trimmedEmail.match(EMAIL_REGEX) === null,
+    [t('authForm.errors.email')]: trimmedEmail.match(EMAIL_REGEX) === null,
   };
 });
 const passwordErrors = computed(() => {
@@ -210,14 +210,19 @@ const togglePasswordBtnClasses = computed(() => {
   $small-screen-size: 576px;
 
 .form-wrapper {
+  --form-margin: 15px;
+
   background-color: var(--sub-background-color);
   border-radius: 5px;
   border: 1px solid var(--border-color);
+  box-sizing: border-box;
+  margin: --form-margin --form-margin 0 ;
   padding: 15px;
-  margin-top: 150px;
+  width: calc(100% - (var(--form-margin) * 2));
 
   @media screen and (min-width: $small-screen-size) {
-    width: 350px;
+    margin: 150px 0 0;
+    width: 400px;
   }
 }
 
