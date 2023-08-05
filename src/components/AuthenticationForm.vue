@@ -216,7 +216,7 @@ const togglePasswordBtnClasses = computed(() => {
   border-radius: 5px;
   border: 1px solid var(--border-color);
   box-sizing: border-box;
-  margin: --form-margin --form-margin 0 ;
+  margin: var(--form-margin) var(--form-margin) 0 var(--form-margin);
   padding: 15px;
   width: calc(100% - (var(--form-margin) * 2));
 
